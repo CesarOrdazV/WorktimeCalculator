@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:vm="clr-namespace:WorktimeCalculator.ViewModels"
+            xmlns:utilities="clr-namespace:WorktimeCalculator.Utilities"
+            x:Class="WorktimeCalculator.Views.WorktimeCalculatorPage"
+            x:DataType="vm:WorktimeCalculatorVM"
+            Title="Worktime Calculator">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto, Auto" ColumnDefinitions="Auto,120" Margin="10">
+        <Label Text="Start Date:" Grid.Row="0" VerticalTextAlignment="Center"/>
+        <Label Text="End Date:" Grid.Row="1" VerticalTextAlignment="Center"/>
+        <Label Text="Workinghours" Grid.Row="2" VerticalTextAlignment="Center"/>
+        <Label Text="Daily Workinghours" Margin="0,20,0,20" Grid.Row="3"  VerticalTextAlignment="Center"/>
+
+        <DatePicker Date="{Binding StartDate}" Grid.Row="0" Grid.Column="1" />
+        <DatePicker Date="{Binding EndDate}" Grid.Row="1" Grid.Column="1" />
+        <Entry Text="{Binding Workinghours}" Placeholder="h:mm" Grid.Row="2" Grid.Column="1" HorizontalTextAlignment="End" />
+        <Label Text="{Binding DailyWorkinghours, Mode=OneWay}" Grid.Row="3" Grid.Column="1" Margin="0,20,0,20" HorizontalTextAlignment="End" />
+        <Button Text="Convert" Command="{Binding CalculateDailyWorkingHoursCommand}" Grid.Row="4" Grid.Column="1"/>
+    </Grid>
+</ContentPage>
