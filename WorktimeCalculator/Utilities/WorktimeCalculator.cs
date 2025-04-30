@@ -15,11 +15,18 @@ public static class WorktimeCalculator
         new DateTime(2025, 12, 25),       
     };
 
+    public static TimeSpan CalculateExpectedWorkinghours(DateTime startDate, DateTime endDate)
+    {
+        var countWorkingDays = CountWorkingDays(startDate, endDate);
+        var expectedWorkinghours = 8 * countWorkingDays;
+
+        return TimeSpan.FromHours(expectedWorkinghours);
+    }
+
     public static TimeSpan CalculateDailyWorkingHours(DateTime startDate, DateTime endDate, TimeSpan workingHours)
     {
-        var dailyWorkingHours = 0f;
         var countWorkingDays = CountWorkingDays(startDate, endDate);
-        dailyWorkingHours = (float)workingHours.TotalHours / countWorkingDays;
+        var dailyWorkingHours = (float)workingHours.TotalHours / countWorkingDays;
 
         return TimeSpan.FromHours(dailyWorkingHours);
     }

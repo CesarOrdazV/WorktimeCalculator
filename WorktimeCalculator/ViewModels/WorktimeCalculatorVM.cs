@@ -8,6 +8,7 @@ public class WorktimeCalculatorVM() : ObservableObject
     private DateTime _startDate = new DateTime(2024, 12, 30);
     private DateTime _endDate = DateTime.Today;
     private string _workinghoursString = "0:00";
+    private string _expectedWorkinghours = "0:00";
     private string _dailyWorkinghoursString = "0:00";
 
     public DateTime StartDate
@@ -24,6 +25,12 @@ public class WorktimeCalculatorVM() : ObservableObject
     {
         get => _workinghoursString;
         set => SetProperty(ref _workinghoursString, value);
+    }
+
+    public string ExpectedWorkinghours
+    {
+        get => _expectedWorkinghours;
+        set => SetProperty(ref _expectedWorkinghours, value);
     }
 
     public string DailyWorkinghours
@@ -47,8 +54,11 @@ public class WorktimeCalculatorVM() : ObservableObject
             }
 
             var dailyWorkinghours = Utilities.WorktimeCalculator.CalculateDailyWorkingHours(_startDate, _endDate, workinghours);
+            var expectedWorkinghours = Utilities.WorktimeCalculator.CalculateExpectedWorkinghours(_startDate, _endDate);
             _dailyWorkinghoursString = $"{dailyWorkinghours.Hours}:{dailyWorkinghours.Minutes}";
+            _expectedWorkinghours = $"{expectedWorkinghours.TotalHours}:{expectedWorkinghours.Minutes}";
             OnPropertyChanged(nameof(DailyWorkinghours));
+            OnPropertyChanged(nameof(ExpectedWorkinghours));
         }
         catch (Exception e)
         {
