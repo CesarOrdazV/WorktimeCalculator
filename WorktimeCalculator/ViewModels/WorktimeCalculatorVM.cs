@@ -9,7 +9,9 @@ public class WorktimeCalculatorVM() : ObservableObject
     private DateTime _endDate = DateTime.Today;
     private string _workinghoursString = "0:00";
     private string _expectedWorkinghours = "0:00";
+    private string _workinghoursDifference = "0:00";
     private string _dailyWorkinghoursString = "0:00";
+    private bool _isPositive = true;
 
     public DateTime StartDate
     {
@@ -33,12 +35,23 @@ public class WorktimeCalculatorVM() : ObservableObject
         set => SetProperty(ref _expectedWorkinghours, value);
     }
 
+    public string WorkinghoursDifference
+    {
+        get => _workinghoursDifference;
+        set => SetProperty(ref _workinghoursDifference, value);
+    }
+
     public string DailyWorkinghours
     {
         get => _dailyWorkinghoursString;
         set => SetProperty(ref _dailyWorkinghoursString, value);
     }
 
+    public bool IsPositive
+    {
+        get => _isPositive;
+        set => SetProperty(ref _isPositive, value);
+    }
     public ICommand CalculateDailyWorkingHoursCommand => new Command(CalculateDailyWorkingHours);
 
     private void CalculateDailyWorkingHours()
@@ -56,9 +69,19 @@ public class WorktimeCalculatorVM() : ObservableObject
             var dailyWorkinghours = Utilities.WorktimeCalculator.CalculateDailyWorkingHours(_startDate, _endDate, workinghours);
             var expectedWorkinghours = Utilities.WorktimeCalculator.CalculateExpectedWorkinghours(_startDate, _endDate);
             _dailyWorkinghoursString = $"{dailyWorkinghours.Hours}:{dailyWorkinghours.Minutes}";
-            _expectedWorkinghours = $"{expectedWorkinghours.TotalHours}:{expectedWorkinghours.Minutes}";
+            _expectedWorkinghours = $"{(int)expectedWorkinghours.TotalHours}:{expectedWorkinghours.Minutes}";
+
+            var minutesDifference = workinghours.TotalMinutes - expectedWorkinghours.TotalMinutes;
+            var difference = TimeSpan.FromMinutes(minutesDifference);
+            _isPositive = difference.TotalHours >= 0; 
+            var differenceHours = Math.Abs((int)difference.TotalHours);
+            var differenceMinutes = Math.Abs(difference.Minutes);
+            _workinghoursDifference = $"{differenceHours}:{differenceMinutes}";
+
             OnPropertyChanged(nameof(DailyWorkinghours));
             OnPropertyChanged(nameof(ExpectedWorkinghours));
+            OnPropertyChanged(nameof(WorkinghoursDifference));
+            OnPropertyChanged(nameof(IsPositive));
         }
         catch (Exception e)
         {

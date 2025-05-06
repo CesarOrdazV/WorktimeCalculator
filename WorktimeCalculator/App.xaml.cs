@@ -14,7 +14,7 @@ public partial class App : Application
 		if (DeviceInfo.Platform == DevicePlatform.WinUI)
 		{
 			window.Width = 360;
-			window.Height = 360;
+			window.Height = 480;
 		}
 
 		return window;
