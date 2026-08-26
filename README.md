@@ -38,18 +38,14 @@ Alternative: **Deploy from a branch** → `main` → `/` (root). Asset paths are
 - Daily average = worked ÷ working days (`—` if there are no working days).
 - Time format: results use `h:mm` with two-digit minutes. Input is two numeric fields (hours and minutes), so Android can use the number keypad.
 
-Holidays (2025, carried over from the former MAUI app):
+Holidays are year-specific (Mexican federal holidays plus Holy Thursday and Good Friday):
 
 ```
-2025-01-01
-2025-02-03
-2025-03-17
-2025-04-17
-2025-04-18
-2025-05-01
-2025-09-16
-2025-11-18
-2025-12-25
+2025-01-01  2025-02-03  2025-03-17  2025-04-17  2025-04-18
+2025-05-01  2025-09-16  2025-11-18  2025-12-25
+
+2026-01-01  2026-02-02  2026-03-16  2026-04-02  2026-04-03
+2026-05-01  2026-09-16  2026-11-16  2026-12-25
 ```
 
 Add more ISO dates (`YYYY-MM-DD`) to `HOLIDAYS` in `worktime.js`. Change hours per day with `HOURS_PER_DAY` in the same file.

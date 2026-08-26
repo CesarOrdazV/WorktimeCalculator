@@ -7,7 +7,7 @@
 
   var HOURS_PER_DAY = 8;
 
-  // Full calendar dates from the MAUI holydays list (year included).
+  // Year-specific Mexican federal holidays plus Holy Thursday and Good Friday.
   var HOLIDAYS = [
     "2025-01-01",
     "2025-02-03",
@@ -18,6 +18,15 @@
     "2025-09-16",
     "2025-11-18",
     "2025-12-25",
+    "2026-01-01",
+    "2026-02-02",
+    "2026-03-16",
+    "2026-04-02",
+    "2026-04-03",
+    "2026-05-01",
+    "2026-09-16",
+    "2026-11-16",
+    "2026-12-25",
   ];
 
   function parseIsoDate(iso) {
