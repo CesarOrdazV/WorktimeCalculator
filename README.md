@@ -36,7 +36,7 @@ Alternative: **Deploy from a branch** → `main` → `/` (root). Asset paths are
 - Expected hours = `8 × working days` (the main result).
 - Difference = hours worked − expected (minus sign and red when behind).
 - Daily average = worked ÷ working days (`—` if there are no working days).
-- Time format: `h:mm` with two-digit minutes.
+- Time format: results use `h:mm` with two-digit minutes. Input is two numeric fields (hours and minutes), so Android can use the number keypad.
 
 Holidays (2025, carried over from the former MAUI app):
 

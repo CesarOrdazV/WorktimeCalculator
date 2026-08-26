@@ -61,7 +61,25 @@
     return days * perDay;
   }
 
-  /** Parse "h:mm" into decimal hours. Empty string → 0. Invalid → null. */
+  /** Hours + minutes fields (Android numeric keypad). Empty → 0. Minutes must be 0–59. */
+  function parseDurationParts(hoursRaw, minutesRaw) {
+    function asInt(raw) {
+      var s = String(raw == null ? "" : raw).trim();
+      if (s === "") return 0;
+      if (!/^\d+$/.test(s)) return null;
+      return Number(s);
+    }
+    var hours = asInt(hoursRaw);
+    var minutes = asInt(minutesRaw);
+    if (hours == null || minutes == null || minutes > 59) return null;
+    return {
+      hours: hours,
+      minutes: minutes,
+      totalHours: hours + minutes / 60,
+      hmm: hours + ":" + String(minutes).padStart(2, "0"),
+    };
+  }
+
   function parseHmm(text) {
     var raw = String(text == null ? "" : text).trim();
     if (raw === "") return 0;
@@ -103,6 +121,7 @@
     countWorkingDays: countWorkingDays,
     expectedHours: expectedHours,
     parseHmm: parseHmm,
+    parseDurationParts: parseDurationParts,
     formatHmm: formatHmm,
     calculate: calculate,
   };

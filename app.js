@@ -4,7 +4,8 @@
   var form = document.getElementById("calc-form");
   var startInput = document.getElementById("start-date");
   var endInput = document.getElementById("end-date");
-  var hoursInput = document.getElementById("worked-hours");
+  var hoursInput = document.getElementById("worked-h");
+  var minutesInput = document.getElementById("worked-m");
   var errorEl = document.getElementById("form-error");
   var daysEl = document.getElementById("working-days");
   var expectedEl = document.getElementById("expected-hours");
@@ -26,7 +27,8 @@
   function setDefaults() {
     if (!startInput.value) startInput.value = yearStartIso();
     if (!endInput.value) endInput.value = todayIso();
-    if (!hoursInput.value) hoursInput.value = "0:00";
+    if (!hoursInput.value) hoursInput.value = "0";
+    if (!minutesInput.value) minutesInput.value = "0";
   }
 
   function showError(message) {
@@ -35,7 +37,12 @@
   }
 
   function render() {
-    var result = Worktime.calculate(startInput.value, endInput.value, hoursInput.value);
+    var parts = Worktime.parseDurationParts(hoursInput.value, minutesInput.value);
+    var result = Worktime.calculate(
+      startInput.value,
+      endInput.value,
+      parts ? parts.hmm : "invalid"
+    );
 
     if (!result.ok && result.error === "range") {
       showError("La fecha inicial no puede ser posterior a la final.");
@@ -47,9 +54,9 @@
       return;
     }
 
-    if (!result.ok && result.error === "hours") {
-      showError("Usa el formato h:mm, por ejemplo 160:30.");
-      daysEl.textContent = String(result.days);
+    if (!parts || (!result.ok && result.error === "hours")) {
+      showError("Usa horas enteras y minutos de 0 a 59.");
+      daysEl.textContent = result.days != null ? String(result.days) : "—";
       expectedEl.textContent = Worktime.formatHmm(result.expected);
       differenceEl.textContent = "—";
       differenceEl.classList.remove("is-behind");
@@ -76,4 +83,7 @@
   startInput.addEventListener("change", render);
   endInput.addEventListener("change", render);
   hoursInput.addEventListener("input", render);
+  hoursInput.addEventListener("change", render);
+  minutesInput.addEventListener("input", render);
+  minutesInput.addEventListener("change", render);
 })();

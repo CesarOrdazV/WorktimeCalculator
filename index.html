@@ -30,15 +30,34 @@
           <input id="end-date" name="end" type="date" required />
         </div>
         <div class="field">
-          <label for="worked-hours">Horas trabajadas (h:mm)</label>
-          <input
-            id="worked-hours"
-            name="worked"
-            type="text"
-            inputmode="numeric"
-            placeholder="160:30"
-            autocomplete="off"
-          />
+          <span class="group-label" id="worked-label">Horas trabajadas</span>
+          <div class="duration" role="group" aria-labelledby="worked-label">
+            <div class="field nested">
+              <label for="worked-h">Horas</label>
+              <input
+                id="worked-h"
+                name="workedHours"
+                type="number"
+                inputmode="numeric"
+                min="0"
+                step="1"
+                autocomplete="off"
+              />
+            </div>
+            <div class="field nested">
+              <label for="worked-m">Minutos</label>
+              <input
+                id="worked-m"
+                name="workedMinutes"
+                type="number"
+                inputmode="numeric"
+                min="0"
+                max="59"
+                step="1"
+                autocomplete="off"
+              />
+            </div>
+          </div>
         </div>
         <button type="submit">Calcular</button>
         <p id="form-error" class="error" hidden></p>
