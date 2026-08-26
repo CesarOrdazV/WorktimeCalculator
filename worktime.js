@@ -6,41 +6,81 @@
   "use strict";
 
   var HOURS_PER_DAY = 8;
-
-  // Year-specific Mexican federal holidays plus Holy Thursday and Good Friday.
-  var HOLIDAYS = [
-    "2025-01-01",
-    "2025-02-03",
-    "2025-03-17",
-    "2025-04-17",
-    "2025-04-18",
-    "2025-05-01",
-    "2025-09-16",
-    "2025-11-18",
-    "2025-12-25",
-    "2026-01-01",
-    "2026-02-02",
-    "2026-03-16",
-    "2026-04-02",
-    "2026-04-03",
-    "2026-05-01",
-    "2026-09-16",
-    "2026-11-16",
-    "2026-12-25",
-  ];
+  var MS_PER_DAY = 24 * 60 * 60 * 1000;
 
   function parseIsoDate(iso) {
-    var parts = String(iso).split("-");
-    if (parts.length !== 3) return null;
-    var y = Number(parts[0]);
-    var m = Number(parts[1]);
-    var d = Number(parts[2]);
+    var raw = String(iso == null ? "" : iso).trim();
+    var match = /^(\d{4})-(\d{2})-(\d{2})/.exec(raw);
+    if (!match) return null;
+    var y = Number(match[1]);
+    var m = Number(match[2]);
+    var d = Number(match[3]);
     if (!y || m < 1 || m > 12 || d < 1 || d > 31) return null;
     return Date.UTC(y, m - 1, d);
   }
 
   function toIsoDate(utcMs) {
     return new Date(utcMs).toISOString().slice(0, 10);
+  }
+
+  /** n-th Monday of a month (monthIndex 0–11). */
+  function nthMonday(year, monthIndex, n) {
+    var firstDow = new Date(Date.UTC(year, monthIndex, 1)).getUTCDay();
+    var offset = (1 - firstDow + 7) % 7;
+    return toIsoDate(Date.UTC(year, monthIndex, 1 + offset + (n - 1) * 7));
+  }
+
+  /** Easter Sunday (Anonymous Gregorian algorithm), UTC midnight. */
+  function easterSundayUtc(year) {
+    var a = year % 19;
+    var b = Math.floor(year / 100);
+    var c = year % 100;
+    var d = Math.floor(b / 4);
+    var e = b % 4;
+    var f = Math.floor((b + 8) / 25);
+    var g = Math.floor((b - f + 1) / 3);
+    var h = (19 * a + b - d - g + 15) % 30;
+    var i = Math.floor(c / 4);
+    var k = c % 4;
+    var l = (32 + 2 * e + 2 * i - h - k) % 7;
+    var m = Math.floor((a + 11 * h + 22 * l) / 451);
+    var month = Math.floor((h + l - 7 * m + 114) / 31);
+    var day = ((h + l - 7 * m + 114) % 31) + 1;
+    return Date.UTC(year, month - 1, day);
+  }
+
+  /**
+   * Mexican LFT rest days for a calendar year, plus Holy Thursday and Good Friday.
+   * Presidential inauguration (1 Oct every six years from 2024) is included when it applies.
+   */
+  function holidaysForYear(year) {
+    var easter = easterSundayUtc(year);
+    var list = [
+      toIsoDate(Date.UTC(year, 0, 1)),
+      nthMonday(year, 1, 1),
+      nthMonday(year, 2, 3),
+      toIsoDate(easter - 3 * MS_PER_DAY),
+      toIsoDate(easter - 2 * MS_PER_DAY),
+      toIsoDate(Date.UTC(year, 4, 1)),
+      toIsoDate(Date.UTC(year, 8, 16)),
+      nthMonday(year, 10, 3),
+      toIsoDate(Date.UTC(year, 11, 25)),
+    ];
+    if (year >= 2024 && (year - 2024) % 6 === 0) {
+      list.push(toIsoDate(Date.UTC(year, 9, 1)));
+    }
+    return list;
+  }
+
+  function holidaysForRange(startIso, endIso) {
+    var startYear = Number(String(startIso).slice(0, 4));
+    var endYear = Number(String(endIso).slice(0, 4));
+    if (!startYear || !endYear || startYear > endYear) return [];
+    var list = [];
+    for (var y = startYear; y <= endYear; y++) {
+      list = list.concat(holidaysForYear(y));
+    }
+    return list;
   }
 
   function countWorkingDays(startIso, endIso, holidays) {
@@ -50,11 +90,11 @@
     if (start > end) return null;
 
     var holidaySet = {};
-    var list = holidays || HOLIDAYS;
+    var list = holidays != null ? holidays : holidaysForRange(startIso, endIso);
     for (var i = 0; i < list.length; i++) holidaySet[list[i]] = true;
 
     var days = 0;
-    for (var t = start; t <= end; t += 24 * 60 * 60 * 1000) {
+    for (var t = start; t <= end; t += MS_PER_DAY) {
       var iso = toIsoDate(t);
       var dow = new Date(t).getUTCDay(); // 0 Sun … 6 Sat
       if (dow === 0 || dow === 6 || holidaySet[iso]) continue;
@@ -125,7 +165,8 @@
 
   var api = {
     HOURS_PER_DAY: HOURS_PER_DAY,
-    HOLIDAYS: HOLIDAYS,
+    holidaysForYear: holidaysForYear,
+    holidaysForRange: holidaysForRange,
     parseIsoDate: parseIsoDate,
     countWorkingDays: countWorkingDays,
     expectedHours: expectedHours,

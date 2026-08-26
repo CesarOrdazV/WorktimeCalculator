@@ -32,23 +32,20 @@ Alternative: **Deploy from a branch** → `main` → `/` (root). Asset paths are
 ## Rules
 
 - Date range is **inclusive**.
-- A working day is Monday–Friday and **not** in `HOLIDAYS` (`worktime.js`).
-- Expected hours = `8 × working days` (the main result).
+- A working day is Monday–Friday minus holidays computed for the years in the range (`holidaysForYear` in `worktime.js`).
+- Expected hours = `8 × working days` (the main result). A full 2026 year is **2016:00** (252 days), not 2088:00 (261 weekdays with no holidays).
 - Difference = hours worked − expected (minus sign and red when behind).
 - Daily average = worked ÷ working days (`—` if there are no working days).
 - Time format: results use `h:mm` with two-digit minutes. Input is two numeric fields (hours and minutes), so Android can use the number keypad.
 
-Holidays are year-specific (Mexican federal holidays plus Holy Thursday and Good Friday):
+Holidays follow Mexican LFT rules (fixed dates and movable Mondays) plus Holy Thursday and Good Friday, generated for each year in the range. 2026 dates:
 
 ```
-2025-01-01  2025-02-03  2025-03-17  2025-04-17  2025-04-18
-2025-05-01  2025-09-16  2025-11-18  2025-12-25
-
 2026-01-01  2026-02-02  2026-03-16  2026-04-02  2026-04-03
 2026-05-01  2026-09-16  2026-11-16  2026-12-25
 ```
 
-Add more ISO dates (`YYYY-MM-DD`) to `HOLIDAYS` in `worktime.js`. Change hours per day with `HOURS_PER_DAY` in the same file.
+Change hours per day with `HOURS_PER_DAY` in `worktime.js`.
 
 ## Files
 

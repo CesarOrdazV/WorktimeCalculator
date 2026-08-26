@@ -58,6 +58,33 @@ test("Nov 16 2026 (Mon holiday) is excluded", () => {
   assert.equal(W.countWorkingDays("2026-11-16", "2026-11-16"), 0);
 });
 
+test("full year 2026 is 252 working days / 2016 hours, not 261 / 2088", () => {
+  assert.equal(W.countWorkingDays("2026-01-01", "2026-12-31"), 252);
+  assert.equal(W.expectedHours("2026-01-01", "2026-12-31"), 2016);
+  assert.equal(W.formatHmm(W.expectedHours("2026-01-01", "2026-12-31")), "2016:00");
+  assert.equal(W.countWorkingDays("2026-01-01", "2026-12-31", []), 261);
+  assert.equal(W.expectedHours("2026-01-01", "2026-12-31", [], 8), 2088);
+});
+
+test("full year 2025 is also 252 working days / 2016 hours", () => {
+  assert.equal(W.countWorkingDays("2025-01-01", "2025-12-31"), 252);
+  assert.equal(W.expectedHours("2025-01-01", "2025-12-31"), 2016);
+});
+
+test("2026 holidays follow LFT Mondays plus Holy Week", () => {
+  assert.deepEqual(W.holidaysForYear(2026), [
+    "2026-01-01",
+    "2026-02-02",
+    "2026-03-16",
+    "2026-04-02",
+    "2026-04-03",
+    "2026-05-01",
+    "2026-09-16",
+    "2026-11-16",
+    "2026-12-25",
+  ]);
+});
+
 test("start after end is invalid", () => {
   assert.equal(W.countWorkingDays("2025-02-01", "2025-01-01"), null);
   const r = W.calculate("2025-02-01", "2025-01-01", "8:00");
