@@ -13,6 +13,7 @@ This document helps AI coding agents work effectively in this repository.
 | `WorktimeCalculator/Views/WorktimeCalculatorPage.xaml` | Primary (and only) user screen |
 | `WorktimeCalculator/Converters/BoolToColorConverter.cs` | Red text when hours difference is negative |
 | `WorktimeCalculator/MauiProgram.cs` | App bootstrap; minimal configuration |
+| `MIGRATION.md` | Plan to rebuild the calculator as a static HTML/JS site in a **new** repo |
 
 ## Conventions
 
@@ -87,3 +88,4 @@ Do not add packages without a clear need; the app intentionally stays minimal.
 - Cloud sync, persistence, or user accounts
 - Localization beyond the current English UI strings
 - Dynamic holiday APIs (current design is a static list)
+- Implementing the static-site rewrite in this repository (see `MIGRATION.md`; that work belongs in a new repo)

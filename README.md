@@ -87,6 +87,10 @@ Working days exclude:
 - Saturday and Sunday
 - Dates in the holidays list
 
+## Migration to a static site
+
+The calculation logic has no server dependency. A plan to rebuild this as a static HTML page plus a small JavaScript module (in a **separate** repository) is in [MIGRATION.md](MIGRATION.md).
+
 ## License
 
 No license file is present in this repository. Contact the repository owner for usage terms.
