@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Horas laborales</title>
+    <meta
+      name="description"
+      content="Calcula las horas que deberías llevar en un rango de fechas, excluyendo fines de semana y días festivos."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <h1>Horas laborales</h1>
+        <p class="lede">
+          Cuántas horas deberías llevar entre dos fechas: 8 h por cada día
+          laborable (lunes a viernes, sin festivos).
+        </p>
+      </header>
+
+      <form id="calc-form" novalidate>
+        <div class="field">
+          <label for="start-date">Fecha inicial</label>
+          <input id="start-date" name="start" type="date" required />
+        </div>
+        <div class="field">
+          <label for="end-date">Fecha final</label>
+          <input id="end-date" name="end" type="date" required />
+        </div>
+        <div class="field">
+          <label for="worked-hours">Horas trabajadas (h:mm)</label>
+          <input
+            id="worked-hours"
+            name="worked"
+            type="text"
+            inputmode="numeric"
+            placeholder="160:30"
+            autocomplete="off"
+          />
+        </div>
+        <button type="submit">Calcular</button>
+        <p id="form-error" class="error" hidden></p>
+      </form>
+
+      <section class="results" aria-live="polite">
+        <p class="hero">
+          <span class="hero-label">Horas que deberías llevar</span>
+          <span id="expected-hours" class="hero-value">0:00</span>
+        </p>
+        <dl>
+          <div class="row">
+            <dt>Días laborables</dt>
+            <dd id="working-days">0</dd>
+          </div>
+          <div class="row">
+            <dt>Diferencia</dt>
+            <dd id="hours-difference">0:00</dd>
+          </div>
+          <div class="row">
+            <dt>Promedio diario</dt>
+            <dd id="daily-hours">0:00</dd>
+          </div>
+        </dl>
+        <p class="note">
+          Festivos 2025: 1 ene, 3 feb, 17 mar, 17–18 abr, 1 may, 16 sep, 18 nov,
+          25 dic. Edita la lista en <code>worktime.js</code>.
+        </p>
+      </section>
+
+      <footer>
+        <p>
+          Sitio estático. Sin servidor ni cuentas. 8 horas por día laborable.
+        </p>
+      </footer>
+    </main>
+
+    <script src="worktime.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

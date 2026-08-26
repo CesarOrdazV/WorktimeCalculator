@@ -1,0 +1,170 @@
+:root {
+  --paper: #f3efe6;
+  --ink: #1c1917;
+  --muted: #5c574e;
+  --line: #d8d0c2;
+  --card: #fbf8f1;
+  --accent: #0f4c3a;
+  --behind: #9b1c1c;
+  --focus: #1f6f54;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.45;
+}
+
+.page {
+  width: min(34rem, calc(100% - 2rem));
+  margin: 2.5rem auto 4rem;
+}
+
+header h1 {
+  font-family: Georgia, "Iowan Old Style", serif;
+  font-size: 1.85rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+}
+
+.lede {
+  margin: 0 0 1.75rem;
+  color: var(--muted);
+}
+
+form,
+.results {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.15rem 1.15rem 1.25rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 0.9rem;
+}
+
+.field:last-of-type {
+  margin-bottom: 1rem;
+}
+
+label {
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+input[type="date"],
+input[type="text"] {
+  font: inherit;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: inherit;
+}
+
+input:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+button {
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  border: 0;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  background: var(--accent);
+  color: #f7f4ee;
+}
+
+button:hover {
+  filter: brightness(1.08);
+}
+
+.error {
+  margin: 0.85rem 0 0;
+  color: var(--behind);
+  font-size: 0.92rem;
+}
+
+.results {
+  margin-top: 1rem;
+}
+
+.hero {
+  padding-bottom: 1rem;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero-label {
+  display: block;
+  color: var(--muted);
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.hero-value {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: Georgia, "Iowan Old Style", serif;
+  font-size: 2.6rem;
+  color: var(--accent);
+  line-height: 1.1;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.row dt {
+  margin: 0;
+  color: var(--muted);
+}
+
+.row dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.is-behind {
+  color: var(--behind);
+}
+
+.note {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+footer {
+  margin-top: 1.5rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
