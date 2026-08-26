@@ -59,6 +59,18 @@
             </div>
           </div>
         </div>
+        <div class="field">
+          <label for="unused-vacation">Vacaciones no disfrutadas (días)</label>
+          <input
+            id="unused-vacation"
+            name="unusedVacation"
+            type="number"
+            inputmode="numeric"
+            min="0"
+            step="1"
+            autocomplete="off"
+          />
+        </div>
         <button type="submit">Calcular</button>
         <p id="form-error" class="error" hidden></p>
       </form>
