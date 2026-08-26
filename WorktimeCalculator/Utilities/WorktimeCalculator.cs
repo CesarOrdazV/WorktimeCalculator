@@ -4,15 +4,15 @@ public static class WorktimeCalculator
 {
     private static readonly List<DateTime> holydays = new()
     {
-        new DateTime(2025, 01, 01),
-        new DateTime(2025, 02, 03),
-        new DateTime(2025, 03, 17),
-        new DateTime(2025, 04, 17),
-        new DateTime(2025, 04, 18),
-        new DateTime(2025, 05, 01),
-        new DateTime(2025, 09, 16),
-        new DateTime(2025, 11, 18),
-        new DateTime(2025, 12, 25),       
+        new DateTime(2026, 01, 01),
+        new DateTime(2026, 02, 02),
+        new DateTime(2026, 03, 16),
+        new DateTime(2026, 04, 02),
+        new DateTime(2026, 04, 03),
+        new DateTime(2026, 05, 01),
+        new DateTime(2026, 09, 16),
+        new DateTime(2026, 11, 16),
+        new DateTime(2026, 12, 25),
     };
 
     public static TimeSpan CalculateExpectedWorkinghours(DateTime startDate, DateTime endDate)

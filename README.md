@@ -80,7 +80,7 @@ The app displays:
 
 ## Holidays
 
-Public holidays are defined in `Utilities/WorktimeCalculator.cs` as a static list. The current list covers **2025** (Mexican federal holidays). To support other years or regions, extend or replace that list.
+Public holidays are defined in `Utilities/WorktimeCalculator.cs` as a static list. The current list covers **2026** (Mexican federal holidays). To support other years or regions, extend or replace that list.
 
 Working days exclude:
 
