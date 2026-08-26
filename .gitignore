@@ -1,39 +1,18 @@
-# Visual Studio
+# Visual Studio / editors
 .vs/
 .vscode/
-
-# Archivos de compilación
-bin/
-obj/
-
-# Configuración de usuario
-*.userprefs
-*.user
 *.suo
+*.user
+*.userprefs
 
-# Dependencias restaurables
-packages/
-.nuget/
-
-# Archivos de caché y logs
+# Logs and swap
 *.log
 *.swp
 *.swo
 
-# MAUI-specific ignores
-Platforms/**/bin/
-Platforms/**/obj/
-Resources/Raw/**/*.db
-Resources/Raw/**/*.sqlite
+# OS
+.DS_Store
+Thumbs.db
 
-# Archivos específicos de macOS/iOS
-xcuserdata/
-Pods/
-DerivedData/
-*.xcworkspace
-*.xcuserstate
-
-# Archivos específicos de Android
-*.apk
-*.aab
-*.keystore
+# Local Pages artifact
+_site/
