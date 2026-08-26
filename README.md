@@ -89,7 +89,7 @@ Working days exclude:
 
 ## Migration to a static site
 
-The calculation logic has no server dependency. A plan to rebuild this as a static HTML page plus a small JavaScript module (in a **separate** repository) is in [MIGRATION.md](MIGRATION.md).
+The calculation logic has no server dependency. A copy-ready GitHub Pages minisite is in [`static-site/`](static-site/). After you create a new repository, copy that folder’s contents to its root and follow [`HANDOFF.md`](HANDOFF.md). The full rule set is in [`MIGRATION.md`](MIGRATION.md).
 
 ## License
 

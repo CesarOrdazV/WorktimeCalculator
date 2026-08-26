@@ -14,6 +14,8 @@ This document helps AI coding agents work effectively in this repository.
 | `WorktimeCalculator/Converters/BoolToColorConverter.cs` | Red text when hours difference is negative |
 | `WorktimeCalculator/MauiProgram.cs` | App bootstrap; minimal configuration |
 | `MIGRATION.md` | Plan to rebuild the calculator as a static HTML/JS site in a **new** repo |
+| `HANDOFF.md` | Copy list, GitHub Pages steps, and test vectors for the repo switch |
+| `static-site/` | Ready-to-copy minisite (HTML/CSS/JS + Pages workflow); not part of the MAUI app |
 
 ## Conventions
 
