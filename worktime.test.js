@@ -97,3 +97,35 @@ test("zero working days does not divide by zero", () => {
   assert.equal(r.days, 0);
   assert.equal(r.daily, null);
 });
+
+test("unused vacation days default to 0 and subtract 8 h each from expected", () => {
+  const none = W.calculate("2025-01-02", "2025-01-03", "16:00");
+  assert.equal(none.ok, true);
+  assert.equal(none.expected, 16);
+  assert.equal(none.difference, 0);
+
+  const one = W.calculate("2025-01-02", "2025-01-03", "16:00", undefined, 1);
+  assert.equal(one.ok, true);
+  assert.equal(one.days, 2);
+  assert.equal(one.expected, 8);
+  assert.equal(one.difference, 8);
+  assert.equal(one.daily, 8);
+
+  const empty = W.calculate("2025-01-02", "2025-01-03", "16:00", undefined, "");
+  assert.equal(empty.ok, true);
+  assert.equal(empty.expected, 16);
+});
+
+test("unused vacation days reject negatives and non-integers", () => {
+  assert.equal(W.parseNonNegativeInt(""), 0);
+  assert.equal(W.parseNonNegativeInt("0"), 0);
+  assert.equal(W.parseNonNegativeInt("3"), 3);
+  assert.equal(W.parseNonNegativeInt(-1), null);
+  assert.equal(W.parseNonNegativeInt("-1"), null);
+  assert.equal(W.parseNonNegativeInt("1.5"), null);
+  assert.equal(W.parseNonNegativeInt("abc"), null);
+
+  const r = W.calculate("2025-01-02", "2025-01-03", "16:00", undefined, "-1");
+  assert.equal(r.ok, false);
+  assert.equal(r.error, "vacation");
+});

@@ -6,6 +6,7 @@
   var endInput = document.getElementById("end-date");
   var hoursInput = document.getElementById("worked-h");
   var minutesInput = document.getElementById("worked-m");
+  var vacationInput = document.getElementById("unused-vacation");
   var errorEl = document.getElementById("form-error");
   var daysEl = document.getElementById("working-days");
   var expectedEl = document.getElementById("expected-hours");
@@ -29,6 +30,7 @@
     if (!endInput.value) endInput.value = todayIso();
     if (!hoursInput.value) hoursInput.value = "0";
     if (!minutesInput.value) minutesInput.value = "0";
+    if (!vacationInput.value) vacationInput.value = "0";
   }
 
   function showError(message) {
@@ -38,10 +40,13 @@
 
   function render() {
     var parts = Worktime.parseDurationParts(hoursInput.value, minutesInput.value);
+    var vacation = Worktime.parseNonNegativeInt(vacationInput.value);
     var result = Worktime.calculate(
       startInput.value,
       endInput.value,
-      parts ? parts.hmm : "invalid"
+      parts ? parts.hmm : "invalid",
+      undefined,
+      vacation == null ? "invalid" : vacation
     );
 
     if (!result.ok && result.error === "range") {
@@ -56,6 +61,16 @@
 
     if (!parts || (!result.ok && result.error === "hours")) {
       showError("Usa horas enteras y minutos de 0 a 59.");
+      daysEl.textContent = result.days != null ? String(result.days) : "—";
+      expectedEl.textContent = Worktime.formatHmm(result.expected);
+      differenceEl.textContent = "—";
+      differenceEl.classList.remove("is-behind");
+      dailyEl.textContent = "—";
+      return;
+    }
+
+    if (vacation == null || (!result.ok && result.error === "vacation")) {
+      showError("Usa un número entero de días, sin negativos.");
       daysEl.textContent = result.days != null ? String(result.days) : "—";
       expectedEl.textContent = Worktime.formatHmm(result.expected);
       differenceEl.textContent = "—";
@@ -86,4 +101,6 @@
   hoursInput.addEventListener("change", render);
   minutesInput.addEventListener("input", render);
   minutesInput.addEventListener("change", render);
+  vacationInput.addEventListener("input", render);
+  vacationInput.addEventListener("change", render);
 })();

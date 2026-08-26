@@ -70,6 +70,19 @@
     return days * perDay;
   }
 
+  /** Non-negative integer field. Empty → 0. Rejects decimals and negatives. */
+  function parseNonNegativeInt(raw) {
+    if (raw == null || raw === "") return 0;
+    if (typeof raw === "number") {
+      if (!isFinite(raw) || raw < 0 || Math.floor(raw) !== raw) return null;
+      return raw;
+    }
+    var s = String(raw).trim();
+    if (s === "") return 0;
+    if (!/^\d+$/.test(s)) return null;
+    return Number(s);
+  }
+
   /** Hours + minutes fields (Android numeric keypad). Empty → 0. Minutes must be 0–59. */
   function parseDurationParts(hoursRaw, minutesRaw) {
     function asInt(raw) {
@@ -106,18 +119,23 @@
     return sign + h + ":" + String(min).padStart(2, "0");
   }
 
-  function calculate(startIso, endIso, workedText, holidays) {
+  function calculate(startIso, endIso, workedText, holidays, unusedVacationDays) {
     var days = countWorkingDays(startIso, endIso, holidays);
     var worked = parseHmm(workedText);
+    var vacation = parseNonNegativeInt(unusedVacationDays);
 
     if (days == null) {
       return { ok: false, error: "range", days: 0, expected: null, worked: worked, difference: null, daily: null };
     }
     if (worked == null) {
-      return { ok: false, error: "hours", days: days, expected: days * HOURS_PER_DAY, worked: null, difference: null, daily: null };
+      var expectedOnHoursError = vacation == null ? days * HOURS_PER_DAY : (days - vacation) * HOURS_PER_DAY;
+      return { ok: false, error: "hours", days: days, expected: expectedOnHoursError, worked: null, difference: null, daily: null };
+    }
+    if (vacation == null) {
+      return { ok: false, error: "vacation", days: days, expected: days * HOURS_PER_DAY, worked: worked, difference: null, daily: null };
     }
 
-    var expected = days * HOURS_PER_DAY;
+    var expected = (days - vacation) * HOURS_PER_DAY;
     var difference = worked - expected;
     var daily = days === 0 ? null : worked / days;
     return { ok: true, error: null, days: days, expected: expected, worked: worked, difference: difference, daily: daily };
@@ -131,6 +149,7 @@
     expectedHours: expectedHours,
     parseHmm: parseHmm,
     parseDurationParts: parseDurationParts,
+    parseNonNegativeInt: parseNonNegativeInt,
     formatHmm: formatHmm,
     calculate: calculate,
   };
