@@ -16,6 +16,7 @@ This repository is a **static GitHub Pages site**. There is no .NET / MAUI app, 
 
 - Vanilla HTML/CSS/JS. Classic `<script>` tags (not ES modules) so `file://` and Pages both work.
 - Time format: `h:mm` (minutes always two digits).
+- Default start date: 1 January of the current calendar year (`app.js`). Default end date: today.
 - Working days: Monday–Friday minus ISO dates in `HOLIDAYS` (`worktime.js`). Compare `YYYY-MM-DD` strings; iterate in UTC.
 - Expected hours: **8 per working day** (`HOURS_PER_DAY`).
 - UI language: Spanish. README and this file: English.

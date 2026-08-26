@@ -18,6 +18,8 @@ python3 -m http.server 8080
 
 Then visit `http://localhost:8080`.
 
+The start date defaults to **1 January of the current year**; the end date defaults to today.
+
 ## GitHub Pages
 
 1. Merge this to `main`.

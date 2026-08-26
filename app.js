@@ -19,8 +19,12 @@
     return y + "-" + m + "-" + d;
   }
 
+  function yearStartIso() {
+    return new Date().getFullYear() + "-01-01";
+  }
+
   function setDefaults() {
-    if (!startInput.value) startInput.value = "2024-12-30";
+    if (!startInput.value) startInput.value = yearStartIso();
     if (!endInput.value) endInput.value = todayIso();
     if (!hoursInput.value) hoursInput.value = "0:00";
   }
