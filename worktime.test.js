@@ -33,6 +33,15 @@ test("start after end is invalid", () => {
   assert.equal(r.error, "range");
 });
 
+test("hours and minutes fields reject minutes over 59", () => {
+  assert.equal(W.parseDurationParts("160", "30").hmm, "160:30");
+  assert.equal(W.parseDurationParts("", "").totalHours, 0);
+  assert.equal(W.parseDurationParts("8", "").totalHours, 8);
+  assert.equal(W.parseDurationParts("0", "45").totalHours, 0.75);
+  assert.equal(W.parseDurationParts("10", "60"), null);
+  assert.equal(W.parseDurationParts("1.5", "0"), null);
+});
+
 test("parse and format h:mm", () => {
   assert.equal(W.parseHmm("160:30"), 160.5);
   assert.equal(W.parseHmm(""), 0);
