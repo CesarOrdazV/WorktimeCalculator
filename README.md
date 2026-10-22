@@ -36,7 +36,7 @@ Alternative: **Deploy from a branch** → `main` → `/` (root). Asset paths are
 - Expected hours = `8 × working days` (the main result).
 - Difference = hours worked − expected (minus sign and red when behind).
 - Daily average = worked ÷ working days (`—` if there are no working days).
-- Time format: results use `h:mm` with two-digit minutes. Input is two numeric fields (hours and minutes), so Android can use the number keypad.
+- Time format: `h:mm` (for example `160:30` or `1920:00`) with two-digit minutes. Hours can exceed 24 to cover full-year totals.
 
 Holidays are year-specific (Mexican federal holidays plus Holy Thursday and Good Friday):
 

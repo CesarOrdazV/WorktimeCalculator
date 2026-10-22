@@ -15,7 +15,7 @@ This repository is a **static GitHub Pages site**. There is no .NET / MAUI app, 
 ## Conventions
 
 - Vanilla HTML/CSS/JS. Classic `<script>` tags (not ES modules) so `file://` and Pages both work.
-- Time format: results use `h:mm` (minutes always two digits). Worked time is two numeric fields (hours, minutes 0–59) so mobile keyboards do not need `:`.
+- Time format: `h:mm` (minutes always two digits; hours can be any non-negative integer, including > 24 for full-year totals).
 - Default start date: 1 January of the current calendar year (`app.js`). Default end date: today.
 - Working days: Monday–Friday minus ISO dates in `HOLIDAYS` (`worktime.js`). Compare `YYYY-MM-DD` strings; iterate in UTC.
 - Expected hours: **8 per working day** (`HOURS_PER_DAY`).
@@ -50,7 +50,7 @@ Edit `HOURS_PER_DAY` in `worktime.js`.
 ## Pitfalls
 
 - Zero working days: do not divide; show `—` for the daily average.
-- Invalid hours/minutes (minutes over 59) and start-after-end must show an error, not silent zeros.
+- Invalid `h:mm` (such as minutes over 59) and start-after-end must show an error, not silent zeros.
 - Relative asset paths only (`styles.css`, not `/styles.css`) so the project Pages URL works.
 - Do not reintroduce a MAUI/XAML app unless explicitly requested.
 
