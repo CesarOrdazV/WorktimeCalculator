@@ -30,34 +30,34 @@
           <input id="end-date" name="end" type="date" required />
         </div>
         <div class="field">
-          <span class="group-label" id="worked-label">Horas trabajadas</span>
-          <div class="duration" role="group" aria-labelledby="worked-label">
-            <div class="field nested">
-              <label for="worked-h">Horas</label>
-              <input
-                id="worked-h"
-                name="workedHours"
-                type="number"
-                inputmode="numeric"
-                min="0"
-                step="1"
-                autocomplete="off"
-              />
-            </div>
-            <div class="field nested">
-              <label for="worked-m">Minutos</label>
-              <input
-                id="worked-m"
-                name="workedMinutes"
-                type="number"
-                inputmode="numeric"
-                min="0"
-                max="59"
-                step="1"
-                autocomplete="off"
-              />
-            </div>
+          <label for="worked">Horas trabajadas (h:mm)</label>
+          <div class="duration-input">
+            <input
+              id="worked"
+              name="worked"
+              type="text"
+              inputmode="numeric"
+              autocapitalize="off"
+              autocorrect="off"
+              spellcheck="false"
+              autocomplete="off"
+              placeholder="160:30"
+              aria-describedby="worked-hint"
+            />
+            <button
+              type="button"
+              class="colon-key"
+              id="insert-colon"
+              aria-label="Insertar dos puntos"
+            >
+              :
+            </button>
           </div>
+          <p id="worked-hint" class="hint">
+            Ejemplo: 160:30. Más de 24 h sigue siendo horas, no días. El punto
+            o la coma también separan los minutos (160.30), no son horas
+            decimales. En el teléfono, el botón : escribe los dos puntos.
+          </p>
         </div>
         <div class="field">
           <label for="unused-vacation">Vacaciones no disfrutadas (días)</label>

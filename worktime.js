@@ -102,12 +102,23 @@
     };
   }
 
+  /**
+   * Total worked time as decimal hours. This is a duration, not a clock time:
+   * hours may exceed 24 and are never wrapped into days.
+   * Accepts "h", "h:mm", "h.mm" and "h,mm". Empty → 0. Minutes must be 0–59.
+   * A dot or comma separates minutes (160.30 = 160 h 30 min), not decimal hours.
+   */
   function parseHmm(text) {
     var raw = String(text == null ? "" : text).trim();
     if (raw === "") return 0;
-    var m = /^(\d+):([0-5]?\d)$/.exec(raw);
-    if (!m) return null;
-    return Number(m[1]) + Number(m[2]) / 60;
+    var whole = /^(\d+)$/.exec(raw);
+    if (whole) return Number(whole[1]);
+    var parts = /^(\d*)\s*[:.,]\s*(\d{0,2})$/.exec(raw);
+    if (!parts) return null;
+    var hours = parts[1] === "" ? 0 : Number(parts[1]);
+    var minutes = parts[2] === "" ? 0 : Number(parts[2]);
+    if (minutes > 59) return null;
+    return hours + minutes / 60;
   }
 
   function formatHmm(totalHours) {

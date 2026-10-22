@@ -82,6 +82,36 @@ test("parse and format h:mm", () => {
   assert.equal(W.formatHmm(-2.5), "−2:30");
 });
 
+test("totals over 24 hours stay hours and are not wrapped into days", () => {
+  assert.equal(W.parseHmm("25:00"), 25);
+  assert.equal(W.parseHmm("25"), 25);
+  assert.equal(W.parseHmm("160"), 160);
+  assert.equal(W.parseHmm("160:"), 160);
+  assert.equal(W.parseHmm("160 : 30"), 160.5);
+  assert.equal(W.parseHmm("160.30"), 160.5);
+  assert.equal(W.parseHmm("160,30"), 160.5);
+  assert.equal(W.parseHmm(":45"), 0.75);
+  assert.equal(W.parseHmm("8:5"), 8 + 5 / 60);
+  assert.equal(W.parseHmm("8:05"), 8 + 5 / 60);
+  assert.equal(W.parseHmm("10:60"), null);
+  assert.equal(W.parseHmm("10.60"), null);
+  assert.equal(W.parseHmm("1,600"), null);
+  assert.equal(W.parseHmm("160:300"), null);
+  assert.equal(W.parseHmm("1.2.3"), null);
+  assert.equal(W.formatHmm(25), "25:00");
+  assert.equal(W.formatHmm(1600), "1600:00");
+  assert.equal(W.formatHmm(W.parseHmm("160:30")), "160:30");
+  assert.equal(W.formatHmm(W.parseHmm("8:05")), "8:05");
+
+  const r = W.calculate("2025-01-02", "2025-01-03", "25:30");
+  assert.equal(r.ok, true);
+  assert.equal(r.worked, 25.5);
+  assert.equal(r.expected, 16);
+  assert.equal(r.difference, 9.5);
+  assert.equal(W.formatHmm(r.difference), "9:30");
+  assert.equal(W.formatHmm(r.daily), "12:45");
+});
+
 test("difference and daily average", () => {
   const r = W.calculate("2025-01-02", "2025-01-03", "15:00");
   assert.equal(r.ok, true);

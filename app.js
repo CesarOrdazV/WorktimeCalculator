@@ -4,8 +4,8 @@
   var form = document.getElementById("calc-form");
   var startInput = document.getElementById("start-date");
   var endInput = document.getElementById("end-date");
-  var hoursInput = document.getElementById("worked-h");
-  var minutesInput = document.getElementById("worked-m");
+  var workedInput = document.getElementById("worked");
+  var colonButton = document.getElementById("insert-colon");
   var vacationInput = document.getElementById("unused-vacation");
   var errorEl = document.getElementById("form-error");
   var daysEl = document.getElementById("working-days");
@@ -28,8 +28,7 @@
   function setDefaults() {
     if (!startInput.value) startInput.value = yearStartIso();
     if (!endInput.value) endInput.value = todayIso();
-    if (!hoursInput.value) hoursInput.value = "0";
-    if (!minutesInput.value) minutesInput.value = "0";
+    if (!workedInput.value) workedInput.value = "0:00";
     if (!vacationInput.value) vacationInput.value = "0";
   }
 
@@ -39,12 +38,11 @@
   }
 
   function render() {
-    var parts = Worktime.parseDurationParts(hoursInput.value, minutesInput.value);
     var vacation = Worktime.parseNonNegativeInt(vacationInput.value);
     var result = Worktime.calculate(
       startInput.value,
       endInput.value,
-      parts ? parts.hmm : "invalid",
+      workedInput.value,
       undefined,
       vacation == null ? "invalid" : vacation
     );
@@ -59,8 +57,8 @@
       return;
     }
 
-    if (!parts || (!result.ok && result.error === "hours")) {
-      showError("Usa horas enteras y minutos de 0 a 59.");
+    if (!result.ok && result.error === "hours") {
+      showError("Usa el formato h:mm, por ejemplo 160:30. Los minutos van de 0 a 59.");
       daysEl.textContent = result.days != null ? String(result.days) : "—";
       expectedEl.textContent = Worktime.formatHmm(result.expected);
       differenceEl.textContent = "—";
@@ -95,12 +93,59 @@
     render();
   });
 
+  var skipSelectOnFocus = false;
+  var focusToken = 0;
+
+  function normalizeWorked() {
+    var value = Worktime.parseHmm(workedInput.value);
+    if (value == null) return;
+    var formatted = Worktime.formatHmm(value);
+    if (workedInput.value !== formatted) {
+      workedInput.value = formatted;
+      render();
+    }
+  }
+
+  function insertColon() {
+    var el = workedInput;
+    var wasFocused = document.activeElement === el;
+    var at = wasFocused && el.selectionEnd != null ? el.selectionEnd : null;
+    focusToken++;
+    skipSelectOnFocus = true;
+    el.focus();
+    skipSelectOnFocus = false;
+
+    var value = el.value;
+    var sepAt = value.search(/[:.,]/);
+    if (sepAt === -1) {
+      if (at == null) at = value.length;
+      el.value = value.slice(0, at) + ":" + value.slice(at);
+      el.setSelectionRange(at + 1, at + 1);
+      render();
+      return;
+    }
+    el.setSelectionRange(sepAt + 1, value.length);
+  }
+
   startInput.addEventListener("change", render);
   endInput.addEventListener("change", render);
-  hoursInput.addEventListener("input", render);
-  hoursInput.addEventListener("change", render);
-  minutesInput.addEventListener("input", render);
-  minutesInput.addEventListener("change", render);
+  workedInput.addEventListener("input", render);
+  workedInput.addEventListener("change", render);
+  workedInput.addEventListener("blur", normalizeWorked);
+  workedInput.addEventListener("focus", function () {
+    if (skipSelectOnFocus) return;
+    var token = ++focusToken;
+    setTimeout(function () {
+      if (token !== focusToken) return;
+      if (document.activeElement === workedInput) workedInput.select();
+    }, 0);
+  });
+  function keepWorkedFocus(event) {
+    event.preventDefault();
+  }
+  colonButton.addEventListener("pointerdown", keepWorkedFocus);
+  colonButton.addEventListener("mousedown", keepWorkedFocus);
+  colonButton.addEventListener("click", insertColon);
   vacationInput.addEventListener("input", render);
   vacationInput.addEventListener("change", render);
 })();

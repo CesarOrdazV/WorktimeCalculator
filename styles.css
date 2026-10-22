@@ -61,20 +61,21 @@ form,
   margin-bottom: 1rem;
 }
 
-label,
-.group-label {
+label {
   font-size: 0.92rem;
   font-weight: 600;
 }
 
-.duration {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
+.duration-input {
+  display: flex;
+  align-items: stretch;
 }
 
-.field.nested {
-  margin-bottom: 0;
+.hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 400;
 }
 
 input[type="date"],
@@ -92,6 +93,41 @@ input[type="number"] {
 input:focus {
   outline: 2px solid var(--focus);
   outline-offset: 1px;
+}
+
+.duration-input input[type="text"] {
+  width: auto;
+  flex: 1;
+  min-width: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.duration-input .colon-key {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #fff;
+  color: var(--ink);
+  padding: 0 0.9rem;
+  min-width: 2.75rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.duration-input .colon-key:hover {
+  background: var(--paper);
+  filter: none;
+}
+
+.duration-input .colon-key:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+  position: relative;
+  z-index: 1;
 }
 
 button {

@@ -36,7 +36,7 @@ Alternative: **Deploy from a branch** → `main` → `/` (root). Asset paths are
 - Expected hours = `8 × working days` (the main result).
 - Difference = hours worked − expected (minus sign and red when behind).
 - Daily average = worked ÷ working days (`—` if there are no working days).
-- Time format: results use `h:mm` with two-digit minutes. Input is two numeric fields (hours and minutes), so Android can use the number keypad.
+- Time format: results and the worked-time field use `h:mm` with two-digit minutes. Hours may exceed 24 and are not converted into days (`160:30` is 160 hours and 30 minutes). The field is not `<input type="time">`, which is a clock capped at 23:59. A `:` button inserts the separator so a phone numeric keypad does not need a colon. `.` and `,` are accepted as the same minute separator (`160.30`), not as decimal hours.
 
 Holidays are year-specific (Mexican federal holidays plus Holy Thursday and Good Friday):
 
