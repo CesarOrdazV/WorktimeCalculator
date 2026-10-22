@@ -6,6 +6,7 @@
   "use strict";
 
   var HOURS_PER_DAY = 8;
+  var VACATION_DAYS_PER_YEAR = 14;
 
   // Year-specific Mexican federal holidays plus Holy Thursday and Good Friday.
   var HOLIDAYS = [
@@ -63,24 +64,27 @@
     return days;
   }
 
-  function expectedHours(startIso, endIso, holidays, hoursPerDay) {
-    var days = countWorkingDays(startIso, endIso, holidays);
-    if (days == null) return null;
-    var perDay = hoursPerDay == null ? HOURS_PER_DAY : hoursPerDay;
-    return days * perDay;
+  function countCalendarMonths(startIso, endIso) {
+    var start = parseIsoDate(startIso);
+    var end = parseIsoDate(endIso);
+    if (start == null || end == null) return null;
+    if (start > end) return null;
+    var startDate = new Date(start);
+    var endDate = new Date(end);
+    return (
+      (endDate.getUTCFullYear() - startDate.getUTCFullYear()) * 12 +
+      (endDate.getUTCMonth() - startDate.getUTCMonth()) +
+      1
+    );
   }
 
-  /** Non-negative integer field. Empty → 0. Rejects decimals and negatives. */
-  function parseNonNegativeInt(raw) {
-    if (raw == null || raw === "") return 0;
-    if (typeof raw === "number") {
-      if (!isFinite(raw) || raw < 0 || Math.floor(raw) !== raw) return null;
-      return raw;
-    }
-    var s = String(raw).trim();
-    if (s === "") return 0;
-    if (!/^\d+$/.test(s)) return null;
-    return Number(s);
+  function expectedHours(startIso, endIso, holidays, hoursPerDay) {
+    var days = countWorkingDays(startIso, endIso, holidays);
+    var months = countCalendarMonths(startIso, endIso);
+    if (days == null || months == null) return null;
+    var perDay = hoursPerDay == null ? HOURS_PER_DAY : hoursPerDay;
+    var vacationDays = months * (VACATION_DAYS_PER_YEAR / 12);
+    return (days - vacationDays) * perDay;
   }
 
   /** Parse "h:mm" (any number of hour digits, minutes 0–59) into decimal hours. Empty string → 0. Invalid → null. */
@@ -101,23 +105,20 @@
     return sign + h + ":" + String(min).padStart(2, "0");
   }
 
-  function calculate(startIso, endIso, workedText, holidays, unusedVacationDays) {
+  function calculate(startIso, endIso, workedText, holidays) {
     var days = countWorkingDays(startIso, endIso, holidays);
     var worked = parseHmm(workedText);
-    var vacation = parseNonNegativeInt(unusedVacationDays);
 
     if (days == null) {
       return { ok: false, error: "range", days: 0, expected: null, worked: worked, difference: null, daily: null };
     }
+
+    var expected = expectedHours(startIso, endIso, holidays);
+
     if (worked == null) {
-      var expectedOnHoursError = vacation == null ? days * HOURS_PER_DAY : (days - vacation) * HOURS_PER_DAY;
-      return { ok: false, error: "hours", days: days, expected: expectedOnHoursError, worked: null, difference: null, daily: null };
-    }
-    if (vacation == null) {
-      return { ok: false, error: "vacation", days: days, expected: days * HOURS_PER_DAY, worked: worked, difference: null, daily: null };
+      return { ok: false, error: "hours", days: days, expected: expected, worked: null, difference: null, daily: null };
     }
 
-    var expected = (days - vacation) * HOURS_PER_DAY;
     var difference = worked - expected;
     var daily = days === 0 ? null : worked / days;
     return { ok: true, error: null, days: days, expected: expected, worked: worked, difference: difference, daily: daily };
@@ -125,12 +126,13 @@
 
   var api = {
     HOURS_PER_DAY: HOURS_PER_DAY,
+    VACATION_DAYS_PER_YEAR: VACATION_DAYS_PER_YEAR,
     HOLIDAYS: HOLIDAYS,
     parseIsoDate: parseIsoDate,
     countWorkingDays: countWorkingDays,
+    countCalendarMonths: countCalendarMonths,
     expectedHours: expectedHours,
     parseHmm: parseHmm,
-    parseNonNegativeInt: parseNonNegativeInt,
     formatHmm: formatHmm,
     calculate: calculate,
   };

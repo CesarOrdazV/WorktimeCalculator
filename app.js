@@ -5,7 +5,6 @@
   var startInput = document.getElementById("start-date");
   var endInput = document.getElementById("end-date");
   var hoursInput = document.getElementById("worked-hours");
-  var vacationInput = document.getElementById("unused-vacation");
   var errorEl = document.getElementById("form-error");
   var daysEl = document.getElementById("working-days");
   var expectedEl = document.getElementById("expected-hours");
@@ -28,7 +27,6 @@
     if (!startInput.value) startInput.value = yearStartIso();
     if (!endInput.value) endInput.value = todayIso();
     if (!hoursInput.value) hoursInput.value = "0:00";
-    if (!vacationInput.value) vacationInput.value = "0";
   }
 
   function showError(message) {
@@ -37,13 +35,10 @@
   }
 
   function render() {
-    var vacation = Worktime.parseNonNegativeInt(vacationInput.value);
     var result = Worktime.calculate(
       startInput.value,
       endInput.value,
-      hoursInput.value,
-      undefined,
-      vacation == null ? "invalid" : vacation
+      hoursInput.value
     );
 
     if (!result.ok && result.error === "range") {
@@ -58,16 +53,6 @@
 
     if (!result.ok && result.error === "hours") {
       showError("Usa el formato h:mm, por ejemplo 160:30.");
-      daysEl.textContent = result.days != null ? String(result.days) : "—";
-      expectedEl.textContent = Worktime.formatHmm(result.expected);
-      differenceEl.textContent = "—";
-      differenceEl.classList.remove("is-behind");
-      dailyEl.textContent = "—";
-      return;
-    }
-
-    if (vacation == null || (!result.ok && result.error === "vacation")) {
-      showError("Usa un número entero de días, sin negativos.");
       daysEl.textContent = result.days != null ? String(result.days) : "—";
       expectedEl.textContent = Worktime.formatHmm(result.expected);
       differenceEl.textContent = "—";
@@ -96,6 +81,4 @@
   endInput.addEventListener("change", render);
   hoursInput.addEventListener("input", render);
   hoursInput.addEventListener("change", render);
-  vacationInput.addEventListener("input", render);
-  vacationInput.addEventListener("change", render);
 })();
