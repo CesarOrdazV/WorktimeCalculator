@@ -33,7 +33,7 @@ Alternative: **Deploy from a branch** → `main` → `/` (root). Asset paths are
 
 - Date range is **inclusive**.
 - A working day is Monday–Friday and **not** in `HOLIDAYS` (`worktime.js`).
-- Expected hours = `8 × working days` (the main result).
+- Expected hours = `8 × (working days − calendar months × 14/12)` (the main result).
 - Difference = hours worked − expected (minus sign and red when behind).
 - Daily average = worked ÷ working days (`—` if there are no working days).
 - Time format: `h:mm` (for example `160:30` or `1920:00`) with two-digit minutes. Hours can exceed 24 to cover full-year totals.

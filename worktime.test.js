@@ -2,24 +2,24 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const W = require("./worktime.js");
 
-test("Jan 2–3 2025 (Thu–Fri) is 2 working days / 16:00", () => {
+test("Jan 2–3 2025 (Thu–Fri) is 2 working days and subtracts 1 month of vacation (9:20) → 6:40", () => {
   assert.equal(W.countWorkingDays("2025-01-02", "2025-01-03"), 2);
-  assert.equal(W.formatHmm(W.expectedHours("2025-01-02", "2025-01-03")), "16:00");
+  assert.equal(W.formatHmm(W.expectedHours("2025-01-02", "2025-01-03")), "6:40");
 });
 
 test("Jan 1 2025 (holiday) is 0 working days", () => {
   assert.equal(W.countWorkingDays("2025-01-01", "2025-01-01"), 0);
-  assert.equal(W.formatHmm(W.expectedHours("2025-01-01", "2025-01-01")), "0:00");
+  assert.equal(W.formatHmm(W.expectedHours("2025-01-01", "2025-01-01")), "−9:20");
 });
 
 test("Jan 4–5 2025 (weekend) is 0 working days", () => {
   assert.equal(W.countWorkingDays("2025-01-04", "2025-01-05"), 0);
 });
 
-test("Jan 1–7 2025 excludes New Year and the weekend (4 days / 32:00)", () => {
-  // 1=Wed holiday, 2–3 work, 4–5 weekend, 6–7 work
+test("Jan 1–7 2025 excludes New Year and the weekend (4 days / 22:40 after 1 month vacation)", () => {
+  // 1=Wed holiday, 2–3 work, 4–5 weekend, 6–7 work -> 32:00 - 9:20 = 22:40
   assert.equal(W.countWorkingDays("2025-01-01", "2025-01-07"), 4);
-  assert.equal(W.formatHmm(W.expectedHours("2025-01-01", "2025-01-07")), "32:00");
+  assert.equal(W.formatHmm(W.expectedHours("2025-01-01", "2025-01-07")), "22:40");
 });
 
 test("May 1 2025 (Thu holiday) is excluded", () => {
@@ -28,13 +28,13 @@ test("May 1 2025 (Thu holiday) is excluded", () => {
 
 test("Jan 1 2026 (Thu holiday) is 0 working days", () => {
   assert.equal(W.countWorkingDays("2026-01-01", "2026-01-01"), 0);
-  assert.equal(W.formatHmm(W.expectedHours("2026-01-01", "2026-01-01")), "0:00");
+  assert.equal(W.formatHmm(W.expectedHours("2026-01-01", "2026-01-01")), "−9:20");
 });
 
-test("Jan 1–7 2026 excludes New Year and the weekend (4 days / 32:00)", () => {
-  // 1=Thu holiday, 2 work, 3–4 weekend, 5–7 work
+test("Jan 1–7 2026 excludes New Year and the weekend (4 days / 22:40 after 1 month vacation)", () => {
+  // 1=Thu holiday, 2 work, 3–4 weekend, 5–7 work -> 32:00 - 9:20 = 22:40
   assert.equal(W.countWorkingDays("2026-01-01", "2026-01-07"), 4);
-  assert.equal(W.formatHmm(W.expectedHours("2026-01-01", "2026-01-07")), "32:00");
+  assert.equal(W.formatHmm(W.expectedHours("2026-01-01", "2026-01-07")), "22:40");
 });
 
 test("Feb 2 2026 (Mon holiday) is excluded", () => {
@@ -60,6 +60,7 @@ test("Nov 16 2026 (Mon holiday) is excluded", () => {
 
 test("start after end is invalid", () => {
   assert.equal(W.countWorkingDays("2025-02-01", "2025-01-01"), null);
+  assert.equal(W.countCalendarMonths("2025-02-01", "2025-01-01"), null);
   const r = W.calculate("2025-02-01", "2025-01-01", "8:00");
   assert.equal(r.ok, false);
   assert.equal(r.error, "range");
@@ -81,8 +82,9 @@ test("parse and format h:mm (including multi-digit hours > 24)", () => {
 test("difference and daily average", () => {
   const r = W.calculate("2025-01-02", "2025-01-03", "15:00");
   assert.equal(r.ok, true);
-  assert.equal(r.expected, 16);
-  assert.equal(r.difference, -1);
+  // 2 working days (16h) minus 1 month vacation (14/12 * 8 = 9.3333...h) = 6.6666...h (6:40)
+  assert.equal(W.formatHmm(r.expected), "6:40");
+  assert.equal(W.formatHmm(r.difference), "8:20");
   assert.equal(r.daily, 7.5);
   assert.equal(W.formatHmm(r.daily), "7:30");
 });
@@ -94,34 +96,20 @@ test("zero working days does not divide by zero", () => {
   assert.equal(r.daily, null);
 });
 
-test("unused vacation days default to 0 and subtract 8 h each from expected", () => {
-  const none = W.calculate("2025-01-02", "2025-01-03", "16:00");
-  assert.equal(none.ok, true);
-  assert.equal(none.expected, 16);
-  assert.equal(none.difference, 0);
+test("each initiated calendar month subtracts 14/12 days (9:20) from expected hours", () => {
+  assert.equal(W.countCalendarMonths("2026-01-15", "2026-01-20"), 1);
+  assert.equal(W.countCalendarMonths("2026-01-31", "2026-02-01"), 2);
+  assert.equal(W.countCalendarMonths("2026-01-01", "2026-03-01"), 3);
+  assert.equal(W.countCalendarMonths("2026-01-01", "2026-12-31"), 12);
 
-  const one = W.calculate("2025-01-02", "2025-01-03", "16:00", undefined, 1);
-  assert.equal(one.ok, true);
-  assert.equal(one.days, 2);
-  assert.equal(one.expected, 8);
-  assert.equal(one.difference, 8);
-  assert.equal(one.daily, 8);
+  // Across two calendar months (Apr 30 – May 4 2026: 2 working days = 16:00, minus 2 months * 9:20 = 18:40 → −2:40)
+  const twoMonths = W.calculate("2026-04-30", "2026-05-04", "16:00");
+  assert.equal(twoMonths.ok, true);
+  assert.equal(twoMonths.days, 2);
+  assert.equal(W.formatHmm(twoMonths.expected), "−2:40");
 
-  const empty = W.calculate("2025-01-02", "2025-01-03", "16:00", undefined, "");
-  assert.equal(empty.ok, true);
-  assert.equal(empty.expected, 16);
-});
-
-test("unused vacation days reject negatives and non-integers", () => {
-  assert.equal(W.parseNonNegativeInt(""), 0);
-  assert.equal(W.parseNonNegativeInt("0"), 0);
-  assert.equal(W.parseNonNegativeInt("3"), 3);
-  assert.equal(W.parseNonNegativeInt(-1), null);
-  assert.equal(W.parseNonNegativeInt("-1"), null);
-  assert.equal(W.parseNonNegativeInt("1.5"), null);
-  assert.equal(W.parseNonNegativeInt("abc"), null);
-
-  const r = W.calculate("2025-01-02", "2025-01-03", "16:00", undefined, "-1");
-  assert.equal(r.ok, false);
-  assert.equal(r.error, "vacation");
+  // Full calendar year 2026: 12 months subtract exactly 14 days * 8h = 112 hours
+  const fullYearDays = W.countWorkingDays("2026-01-01", "2026-12-31");
+  const fullYearExpected = W.expectedHours("2026-01-01", "2026-12-31");
+  assert.equal(fullYearExpected, (fullYearDays - 14) * 8);
 });
